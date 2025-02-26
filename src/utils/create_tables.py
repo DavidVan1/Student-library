@@ -39,5 +39,17 @@ if __name__ == "__main__":
         )
         cur.execute(create_book_table_query)
 
+        create_author_table_query=sql.SQL(
+            """
+            DROP TABLE IF EXISTS author;
+            CREATE TABLE author (
+                author_id SERIAL PRIMARY KEY,
+                name VARCHAR(128),
+                surname VARCHAR(128)
+            );
+            """
+        )
+        cur.execute(create_author_table_query)
+
 
     conn.close()
