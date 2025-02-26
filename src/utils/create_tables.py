@@ -25,19 +25,7 @@ if __name__ == "__main__":
             """
         )
         cur.execute(create_student_table_query)
-    
-        create_book_table_query=sql.SQL(
-            """
-            DROP TABLE IF EXISTS book;
-            CREATE TABLE book (
-                book_id SERIAL PRIMARY KEY,
-                title VARCHAR(128),
-                author_id INT,
-                copies_available INT DEFAULT 1
-            );
-            """
-        )
-        cur.execute(create_book_table_query)
+
 
         create_author_table_query=sql.SQL(
             """
@@ -50,6 +38,22 @@ if __name__ == "__main__":
             """
         )
         cur.execute(create_author_table_query)
+    
+
+        create_book_table_query=sql.SQL(
+            """
+            DROP TABLE IF EXISTS book;
+            CREATE TABLE book (
+                book_id SERIAL PRIMARY KEY,
+                title VARCHAR(128),
+                author_id INT,
+                copies_available INT DEFAULT 1
+                FOREIGN KEY (author_id) REFERENCES author(author_id) ON DELETE CASCADE
+            );
+            """
+        )
+        cur.execute(create_book_table_query)
+
 
         create_borrow_table_query=sql.SQL(
             """
