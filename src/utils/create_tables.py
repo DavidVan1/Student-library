@@ -47,7 +47,7 @@ if __name__ == "__main__":
                 book_id SERIAL PRIMARY KEY,
                 title VARCHAR(128),
                 author_id INT,
-                copies_available INT DEFAULT 1
+                copies_available INT DEFAULT 1,
                 FOREIGN KEY (author_id) REFERENCES author(author_id) ON DELETE CASCADE
             );
             """
