@@ -13,18 +13,17 @@ class PostgresDB:
         self.password=password
     
     def connect(self):
-        if self.connection is None:
-            try:
-                self.connection=psycopg2.connect(
-                    host=self.host,
-                    database=self.database,
-                    user=self.user,
-                    password=self.password
-                )
-                print("Connected")
-            except Exception as e:
-                print(f"Error connecting to database: {e}")
-                self.connection = None
+        try:
+            self.connection=psycopg2.connect(
+                host=self.host,
+                database=self.database,
+                user=self.user,
+                password=self.password
+            )
+            print("Connected")
+        except Exception as e:
+            print(f"Error connecting to database: {e}")
+            self.connection = None
 
     def insert_data(self, table_name, data_dict):
         if self.connection is None or self.connection.closed:
@@ -49,14 +48,13 @@ class PostgresDB:
                 traceback.print_exc()
                 print(f"Error {e}")
 
-            self.connection.close()
-            return insert
+        self.connection.close()
+        return insert
     
 
     def get_data_simple_condition(self, table_name, columns=[], condition_column=None, condition_value=None):
         result = []
-        if columns == []: columns = ['*']
-        
+
         if self.connection is None or self.connection.closed:
             self.connect()
         
@@ -85,8 +83,8 @@ class PostgresDB:
                         sql.Identifier(condition_column),
                         sql.Literal(condition_value)
                     )
-                    cur.execute()
-                    result=cur.fetchall()
+                cur.execute(select_query)
+                result=cur.fetchall()
             except Exception as e:
                 traceback.print_exc()
                 print(f"Error {e}")
