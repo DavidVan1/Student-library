@@ -52,6 +52,32 @@ class PostgresDB:
         return insert
     
 
+    def get_all_data(self, table_name):
+        result = []
+        if self.connection is None or self.connection.closed:
+            self.connect()
+        
+        with self.connection, self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            try:
+                select_query=sql.SQL(
+                    """
+                    SELECT *
+                    FROM {}
+                    """
+                ).format(
+                    sql.Identifier(table_name)
+                )
+                cur.execute(select_query)
+                result = cur.fetchall()
+            except Exception as e:
+                traceback.print_exc()
+                print(f"Error {e}")
+        
+        self.connection.close()
+        return result
+        
+    
+
     def get_data_simple_condition(self, table_name, columns=[], condition_column=None, condition_value=None):
         result = []
 
