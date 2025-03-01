@@ -147,3 +147,31 @@ class PostgresDB:
                 print(f"Error {e}")
         self.connection.close()
         return result
+    
+
+    def update_table(self, table_name, column, new_value, condition_column, condition_value):
+
+        if self.connection == None or self.connection.closed:
+            self.connect()
+        
+        with self.connection, self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            try:
+                update_table_query = sql.SQL(
+                    """
+                    UPDATE {}
+                    SET {} = {}
+                    WHERE {} = {}
+                    """
+                ).format(
+                    sql.Identifier(table_name),
+                    sql.Identifier(column),
+                    sql.Literal(new_value),
+                    sql.Identifier(condition_column),
+                    sql.Identifier(condition_value)
+                )
+                cur.execute(update_table_query)
+                print("Table updated")
+            except Exception as e:
+                traceback.print_exc()
+                print(f"Error {e}")
+        self.connection.close()
