@@ -13,3 +13,12 @@ class InformationSystem:
         student=self.db.insert_data(consts.STUDENT_TABLE, data_dict)
         return student
     
+    def get_books(self):
+        books=self.db.get_all_data(consts.BOOK_TABLE)
+        return books
+
+    def insert_book(self, data_dict):
+        book=self.db.insert_data(consts.BOOK_TABLE, data_dict)
+        return book
+    
+    
