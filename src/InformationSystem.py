@@ -21,4 +21,11 @@ class InformationSystem:
         book=self.db.insert_data(consts.BOOK_TABLE, data_dict)
         return book
     
+    def get_authors(self):
+        authors=self.db.get_all_data(consts.AUTHOR_TABLE)
+        return authors
+    
+    def insert_author(self, data_dict):
+        author=self.db.insert_data(consts.AUTHOR_TABLE, data_dict)
+        return author
     
