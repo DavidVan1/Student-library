@@ -116,3 +116,34 @@ class PostgresDB:
                 print(f"Error {e}")
         self.connection.close()
         return result
+    
+
+    def get_join_results(self, table_name_a, table_name_b, join_coulmn_name_a, join_coulmn_name_b=None):
+        result=[]
+        join_coulmn_name_b = join_coulmn_name_b or join_coulmn_name_a
+        if self.connection == None or self.connection.closed:
+            self.connect()
+        
+        with self.connection, self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            try:
+                join_query=sql.SQL(
+                    """
+                    SELECT *
+                    FROM {}
+                    JOIN {} ON {}.{} = {}.{}
+                    """
+                ).format(
+                    sql.Identifier(table_name_a),
+                    sql.Identifier(table_name_b),
+                    sql.Identifier(table_name_a),
+                    sql.Identifier(join_coulmn_name_a),
+                    sql.Identifier(table_name_b),
+                    sql.Identifier(join_coulmn_name_b),
+                )
+                cur.execute(join_query)
+                result=cur.fetchall()
+            except Exception as e:
+                traceback.print_exc()
+                print(f"Error {e}")
+        self.connection.close()
+        return result
