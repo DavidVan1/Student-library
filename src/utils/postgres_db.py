@@ -118,9 +118,9 @@ class PostgresDB:
         return result
     
 
-    def get_join_results(self, table_name_a, table_name_b, join_coulmn_name_a, join_coulmn_name_b=None):
+    def get_join_results(self, table_name_a, table_name_b, join_column_name_a, join_column_name_b):
         result=[]
-        join_coulmn_name_b = join_coulmn_name_b or join_coulmn_name_a
+
         if self.connection == None or self.connection.closed:
             self.connect()
         
@@ -136,9 +136,9 @@ class PostgresDB:
                     sql.Identifier(table_name_a),
                     sql.Identifier(table_name_b),
                     sql.Identifier(table_name_a),
-                    sql.Identifier(join_coulmn_name_a),
+                    sql.Identifier(join_column_name_a),
                     sql.Identifier(table_name_b),
-                    sql.Identifier(join_coulmn_name_b),
+                    sql.Identifier(join_column_name_b),
                 )
                 cur.execute(join_query)
                 result=cur.fetchall()
@@ -165,16 +165,16 @@ class PostgresDB:
                 )
 
                 update_query = sql.SQL(
-                    """
-                    UPDATE {} 
-                    SET {} 
-                    WHERE {}
-                    """
+                        """
+                        UPDATE {} 
+                        SET {} 
+                        WHERE {}
+                        """
                     ).format(
-                    sql.Identifier(table_name),
-                    set_clause,
-                    where_clause
-                )
+                        sql.Identifier(table_name),
+                        set_clause,
+                        where_clause
+                    )
 
                 values = {**updates, **conditions}
 
