@@ -42,5 +42,6 @@ class InformationSystem:
         borrow=self.db.insert_data(consts.BORROW_TABLE, data_dict)
         return borrow
     
-    
+    def return_book(self, updates_dict, conditions_dict):
+        self.db.update_table(consts.BORROW_TABLE, updates_dict, conditions_dict)
     
