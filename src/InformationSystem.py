@@ -16,6 +16,10 @@ class InformationSystem:
     def get_books(self):
         books=self.db.get_all_data(consts.BOOK_TABLE)
         return books
+    
+    def get_books_by_author(self, author_id):
+        books=self.db.get_join_results(consts.BOOK_TABLE, consts.AUTHOR_TABLE, "author_id", "author_id")
+        return books
 
     def insert_book(self, data_dict):
         book=self.db.insert_data(consts.BOOK_TABLE, data_dict)
