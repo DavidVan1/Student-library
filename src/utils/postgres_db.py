@@ -149,29 +149,39 @@ class PostgresDB:
         return result
     
 
-    def update_table(self, table_name, column, new_value, condition_column, condition_value):
+    def update_table(self, table_name, updates, conditions):
 
         if self.connection == None or self.connection.closed:
             self.connect()
-        
+
         with self.connection, self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             try:
-                update_table_query = sql.SQL(
-                    """
-                    UPDATE {}
-                    SET {} = {}
-                    WHERE {} = {}
-                    """
-                ).format(
-                    sql.Identifier(table_name),
-                    sql.Identifier(column),
-                    sql.Literal(new_value),
-                    sql.Identifier(condition_column),
-                    sql.Identifier(condition_value)
+                set_clause = sql.SQL(", ").join(
+                    sql.Composed([sql.Identifier(k), sql.SQL(" = "), sql.Placeholder(k)]) for k in updates.keys()
                 )
-                cur.execute(update_table_query)
-                print("Table updated")
+                
+                where_clause = sql.SQL(" AND ").join(
+                    sql.Composed([sql.Identifier(k), sql.SQL(" = "), sql.Placeholder(k)]) for k in conditions.keys()
+                )
+
+                update_query = sql.SQL(
+                    """
+                    UPDATE {} 
+                    SET {} 
+                    WHERE {}
+                    """
+                    ).format(
+                    sql.Identifier(table_name),
+                    set_clause,
+                    where_clause
+                )
+
+                values = {**updates, **conditions}
+
+                cur.execute(update_query, values)
+                print(f"Updated {cur.rowcount} rows in {table_name}")
+
             except Exception as e:
                 traceback.print_exc()
-                print(f"Error {e}")
+                print(f"Error: {e}")
         self.connection.close()
