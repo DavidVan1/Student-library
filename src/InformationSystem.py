@@ -33,8 +33,14 @@ class InformationSystem:
         available_copies=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["copies_available"], "book_id", book_id)
         return available_copies
     
+    def get_loans(self, student_id):
+        loans=self.db.get_data_simple_condition(consts.BORROW_TABLE, ["borrow_id", "book_id", "borrow_date", "return_date"], 
+                                                "student_id", student_id)
+        return loans
+    
     def borrow_book(self, data_dict):
         borrow=self.db.insert_data(consts.BORROW_TABLE, data_dict)
         return borrow
+    
     
     
