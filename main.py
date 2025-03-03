@@ -22,6 +22,8 @@ def print_menu():
     print("\t[5] to list students")
     print("\t[6] to list books")
     print("\t[7] to list loans")
+    print("\t[8] to list unreturned books")
+    print("\t[9] to exit")
 
 
 def add_student(information_system: InformationSystem):
@@ -38,5 +40,34 @@ def add_student(information_system: InformationSystem):
     information_system.insert_student({"name": name, "surname": surname, "programme": programme})
 
 
+def get_students(information_system: InformationSystem):
+    students=information_system.get_students()
+    for student in students:
+        id, name, surname, programme = student
+        print(f"{id}, {name} {surname} - {programme}")
+
+
+
+
 if __name__== "__main__":
-    add_student(information_system)
+    
+    while True:
+        while True:
+            try:
+                print_menu()
+                menu_choice=int(input("Menu choice: "))
+                if menu_choice < 0 or menu_choice > 9:
+                    raise Exception("Invalid menu choice")
+                break
+            except Exception as e:
+                print(e)
+                print("Enter a valid choice")
+        
+        if menu_choice == 0:
+            add_student(information_system)
+        
+        if menu_choice == 5:
+            get_students(information_system)
+        
+        if menu_choice == 9:
+            break
