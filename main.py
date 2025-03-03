@@ -47,7 +47,24 @@ def get_students(information_system: InformationSystem):
         print(f"{id}, {name} {surname} - {programme}")
 
 
+def add_author(information_system: InformationSystem):
+    print("Author details:")
+    while True:
+        try:
+            name=input("Name: ")
+            surname=input("Surname: ")
+        except Exception as e:
+            print(e)
+            continue
+        break
+    information_system.insert_author({"name": name, "surname": surname})
 
+
+def get_authors(information_system: InformationSystem):
+    authors=information_system.get_authors()
+    for author in authors:
+        id, name, surname = author
+        print(f"{id}, {name} {surname}")
 
 if __name__== "__main__":
     
@@ -65,6 +82,9 @@ if __name__== "__main__":
         
         if menu_choice == 0:
             add_student(information_system)
+
+        if menu_choice == 1:
+            add_author(information_system)
         
         if menu_choice == 5:
             get_students(information_system)
