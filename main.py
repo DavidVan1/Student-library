@@ -1,5 +1,5 @@
-from .src.utils.postgres_db import PostgresDB
-from .src.InformationSystem import InformationSystem
+from src.utils.postgres_db import PostgresDB
+from src.InformationSystem import InformationSystem
 
 pg_db=PostgresDB(
     host="localhost",
@@ -9,6 +9,7 @@ pg_db=PostgresDB(
 )
 
 information_system=InformationSystem(db=pg_db)
+
 
 def print_menu():
     print("\n*******************************************")
@@ -23,3 +24,19 @@ def print_menu():
     print("\t[7] to list loans")
 
 
+def add_student(information_system: InformationSystem):
+    print("Student details:")
+    while True:
+        try:
+            name=input("Name: ")
+            surname=input("Surname: ")
+            programme=input("Programme: ")
+        except Exception as e:
+            print(e)
+            continue
+        break
+    information_system.insert_student({"name": name, "surname": surname, "programme": programme})
+
+
+if __name__== "__main__":
+    add_student(information_system)
