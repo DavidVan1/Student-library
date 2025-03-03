@@ -15,12 +15,12 @@ if __name__ == "__main__":
     with conn, conn.cursor() as cur:
         create_student_table_query=sql.SQL(
             """
-            DROP TABLE IF EXISTS student;
+            DROP TABLE IF EXISTS student CASCADE;
             CREATE TABLE student (
                 student_id SERIAL PRIMARY KEY,
                 name VARCHAR(128) NOT NULL,
                 surname VARCHAR(128) NOT NULL,
-                grade INT
+                programme VARCHAR(128)
             );
             """
         )
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
         create_author_table_query=sql.SQL(
             """
-            DROP TABLE IF EXISTS author;
+            DROP TABLE IF EXISTS author CASCADE;
             CREATE TABLE author (
                 author_id SERIAL PRIMARY KEY,
                 name VARCHAR(128),
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         create_book_table_query=sql.SQL(
             """
-            DROP TABLE IF EXISTS book;
+            DROP TABLE IF EXISTS book CASCADE;
             CREATE TABLE book (
                 book_id SERIAL PRIMARY KEY,
                 title VARCHAR(128),
