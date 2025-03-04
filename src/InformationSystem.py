@@ -33,6 +33,10 @@ class InformationSystem:
         author=self.db.insert_data(consts.AUTHOR_TABLE, data_dict)
         return author
     
+    def get_author_by_name(self, conditions):
+        author=self.db.get_data_multiple_conditions(consts.AUTHOR_TABLE, conditions)
+        return author
+    
     def get_available_copies(self, book_id):
         available_copies=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["copies_available"], "book_id", book_id)
         return available_copies
