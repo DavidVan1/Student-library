@@ -20,7 +20,6 @@ class PostgresDB:
                 user=self.user,
                 password=self.password
             )
-            print("Connected")
         except Exception as e:
             print(f"Error connecting to database: {e}")
             self.connection = None
