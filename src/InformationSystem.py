@@ -37,6 +37,10 @@ class InformationSystem:
         author=self.db.get_data_multiple_conditions(consts.AUTHOR_TABLE, conditions)
         return author
     
+    def get_author_by_id(self, author_id):
+        name, surname=self.db.get_data_simple_condition(consts.AUTHOR_TABLE, ["name", "surname"], "author_id", author_id)[0]
+        return name, surname
+    
     def get_available_copies(self, book_id):
         available_copies=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["copies_available"], "book_id", book_id)
         return available_copies
