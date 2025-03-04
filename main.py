@@ -21,8 +21,8 @@ def print_menu():
     print("\t[4] to return a book")
     print("\t[5] to list students")
     print("\t[6] to list books")
-    print("\t[7] to list loans")
-    print("\t[8] to list unreturned books")
+    print("\t[7] to list authors")
+    print("\t[8] to list loans")
     print("\t[9] to exit")
 
 
@@ -66,6 +66,8 @@ def get_authors(information_system: InformationSystem):
         id, name, surname = author
         print(f"{id}, {name} {surname}")
 
+
+
 if __name__== "__main__":
     
     while True:
@@ -83,11 +85,14 @@ if __name__== "__main__":
         if menu_choice == 0:
             add_student(information_system)
 
-        if menu_choice == 1:
+        elif menu_choice == 1:
             add_author(information_system)
         
-        if menu_choice == 5:
+        elif menu_choice == 5:
             get_students(information_system)
+
+        elif menu_choice == 7:
+            get_authors(information_system)
         
-        if menu_choice == 9:
+        elif menu_choice == 9:
             break
