@@ -47,17 +47,18 @@ def get_students(information_system: InformationSystem):
         print(f"{id}, {name} {surname} - {programme}")
 
 
-def add_author(information_system: InformationSystem):
-    print("Author details:")
-    while True:
-        try:
-            name=input("Name: ")
-            surname=input("Surname: ")
-        except Exception as e:
-            print(e)
-            continue
-        break
-    information_system.insert_author({"name": name, "surname": surname})
+def add_author(information_system: InformationSystem, name=None, surname=None):
+    if name is None or surname is None:
+        print("Author details:")
+        while True:
+            try:
+                name=input("Name: ")
+                surname=input("Surname: ")
+            except Exception as e:
+                print(e)
+                continue
+            break
+    return information_system.insert_author({"name": name, "surname": surname})
 
 
 def get_authors(information_system: InformationSystem):
@@ -68,8 +69,46 @@ def get_authors(information_system: InformationSystem):
 
 
 
-if __name__== "__main__":
+def get_author_id(information_system: InformationSystem, name, surname):
+    id=information_system.get_author_by_name({"name": name, "surname": surname})
+    return id[0][0] if id else add_author(information_system, name, surname)[0]
+
+
+def get_author_name(information_system: InformationSystem, author_id):
+    return information_system.get_author_by_id(author_id)
+
+
+def add_book(information_system: InformationSystem):
+    print("Book details:")
+    while True:
+        try:
+            title=input("Title: ")
+            author_name=input("Author name: ")
+            author_surname=input("Author surname: ")
+            copies_available=int(input("Copies available: "))
+        except Exception as e:
+            print(e)
+            continue
+        break
+
+    author_id = get_author_id(information_system, author_name, author_surname)
+    information_system.insert_book({"title": title, "author_id": author_id, "copies_available": copies_available})
+
+
+def get_books(information_system: InformationSystem):
+    books=information_system.get_books()
     
+    for book in books:
+        id, title, author_id, copies_available = book
+        author_name, author_surname = get_author_name(information_system, author_id)
+        print("\n*******************************************")
+        print(title)
+        print(f"\t ID: {id}")
+        print(f"\t Name: {author_name} {author_surname}")
+        print(f"\t Available copies: {copies_available}")
+
+if __name__== "__main__":
+
     while True:
         while True:
             try:
@@ -87,9 +126,15 @@ if __name__== "__main__":
 
         elif menu_choice == 1:
             add_author(information_system)
+
+        elif menu_choice == 2:
+            add_book(information_system)
         
         elif menu_choice == 5:
             get_students(information_system)
+        
+        elif menu_choice == 6:
+            get_books(information_system)
 
         elif menu_choice == 7:
             get_authors(information_system)
