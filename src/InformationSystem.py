@@ -43,7 +43,7 @@ class InformationSystem:
     
     def get_available_copies(self, book_id):
         available_copies=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["copies_available"], "book_id", book_id)
-        return available_copies
+        return available_copies[0][0] if available_copies else -1
     
     def get_loans(self, student_id):
         loans=self.db.get_data_simple_condition(consts.BORROW_TABLE, ["borrow_id", "book_id", "borrow_date", "return_date"], 
@@ -52,6 +52,8 @@ class InformationSystem:
     
     def borrow_book(self, data_dict):
         borrow=self.db.insert_data(consts.BORROW_TABLE, data_dict)
+        copies = self.get_available_copies(data_dict["book_id"])
+        self.db.update_table(consts.BOOK_TABLE, {"copies_available": copies-1}, {"book_id": data_dict["book_id"]})
         return borrow
     
     def return_book(self, updates_dict, conditions_dict):
