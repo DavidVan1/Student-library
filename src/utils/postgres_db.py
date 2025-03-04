@@ -117,6 +117,41 @@ class PostgresDB:
         return result
     
 
+    def get_data_multiple_conditions(self, table_name, conditions):
+        result = []
+
+        if self.connection == None or self.connection.closed:
+            self.connect()
+
+        with self.connection, self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            try:
+                where_clause = sql.SQL(" AND ").join(
+                    sql.Composed([sql.Identifier(k), sql.SQL(" = "), sql.Placeholder(k)]) for k in conditions.keys()
+                )
+
+                update_query = sql.SQL(
+                        """
+                        SELECT *
+                        FROM {}
+                        WHERE {}
+                        """
+                    ).format(
+                        sql.Identifier(table_name),
+                        where_clause
+                    )
+
+                values = {**conditions}
+
+                cur.execute(update_query, values)
+                result=cur.fetchall()
+
+            except Exception as e:
+                traceback.print_exc()
+                print(f"Error: {e}")
+        self.connection.close()
+        return result
+    
+
     def get_join_results(self, table_name_a, table_name_b, join_column_name_a, join_column_name_b):
         result=[]
 
