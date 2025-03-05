@@ -20,6 +20,10 @@ class InformationSystem:
     def get_books_by_author(self, author_id):
         books=self.db.get_join_results(consts.BOOK_TABLE, consts.AUTHOR_TABLE, author_id, author_id)
         return books
+    
+    def get_book_title_by_id(self, book_id):
+        book=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["title"], "book_id", book_id)
+        return book
 
     def insert_book(self, data_dict):
         book=self.db.insert_data(consts.BOOK_TABLE, data_dict)
@@ -63,4 +67,6 @@ class InformationSystem:
     
     def return_book(self, updates_dict, conditions_dict):
         self.db.update_table(consts.BORROW_TABLE, updates_dict, conditions_dict)
+    
+
     
