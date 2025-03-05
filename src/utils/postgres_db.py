@@ -117,7 +117,7 @@ class PostgresDB:
         return result
     
 
-    def get_data_multiple_conditions(self, table_name, conditions):
+    def get_data_multiple_conditions(self, table_name, columns, conditions):
         result = []
 
         if self.connection == None or self.connection.closed:
@@ -129,16 +129,29 @@ class PostgresDB:
                     sql.Composed([sql.Identifier(k), sql.SQL(" = "), sql.Placeholder(k)]) for k in conditions.keys()
                 )
 
-                update_query = sql.SQL(
-                        """
-                        SELECT *
-                        FROM {}
-                        WHERE {}
-                        """
-                    ).format(
-                        sql.Identifier(table_name),
-                        where_clause
-                    )
+                if columns == []:
+                    update_query = sql.SQL(
+                            """
+                            SELECT *
+                            FROM {}
+                            WHERE {}
+                            """
+                        ).format(
+                            sql.Identifier(table_name),
+                            where_clause
+                        )
+                else:
+                    update_query = sql.SQL(
+                            """
+                            SELECT {}
+                            FROM {}
+                            WHERE {}
+                            """
+                        ).format(
+                            sql.SQL(',').join(map(sql.Identifier, columns)),
+                            sql.Identifier(table_name),
+                            where_clause
+                        )
 
                 values = {**conditions}
 
