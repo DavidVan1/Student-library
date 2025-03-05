@@ -50,6 +50,11 @@ class InformationSystem:
                                                 "student_id", student_id)
         return loans
     
+    def get_loans_by_student(self, student_id):
+        loans=self.db.get_data_multiple_conditions(consts.BORROW_TABLE, ["borrow_id", "book_id"], 
+                                                   {"student_id": student_id, "returned": "FALSE"})
+        return loans
+    
     def borrow_book(self, data_dict):
         borrow=self.db.insert_data(consts.BORROW_TABLE, data_dict)
         copies = self.get_available_copies(data_dict["book_id"])
