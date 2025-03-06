@@ -114,10 +114,19 @@ def is_book_available(information_system: InformationSystem, book_id):
     return information_system.get_available_copies(book_id) > 0
 
 
+def student_exists(information_system: InformationSystem, student_id):
+    return information_system.get_student_by_id(student_id) != []
+
+
 def borrow_book(information_system: InformationSystem):
     while True:
         try:
             student_id=input("Student id: ")
+
+            if not student_exists(information_system, student_id):
+                print(f"No student with ID {student_id}")
+                return
+            
             book_id=input("Book id: ")
         except Exception as e:
             print(e)
