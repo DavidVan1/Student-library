@@ -15,6 +15,10 @@ class InformationSystem:
         student=self.db.insert_data(consts.STUDENT_TABLE, data_dict)
         return student
     
+    def get_student_by_id(self, student_id):
+        student=self.db.get_data_simple_condition(consts.STUDENT_TABLE, ["name", "surname", "programme"], "student_id", student_id)
+        return student
+    
     def get_books(self):
         books=self.db.get_all_data(consts.BOOK_TABLE)
         return books
