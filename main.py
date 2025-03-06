@@ -1,6 +1,8 @@
 from src.utils.postgres_db import PostgresDB
 from src.InformationSystem import InformationSystem
 
+import datetime
+
 pg_db=PostgresDB(
     host="localhost",
         database="postgres",
@@ -107,6 +109,84 @@ def get_books(information_system: InformationSystem):
         print(f"\t Name: {author_name} {author_surname}")
         print(f"\t Available copies: {copies_available}")
 
+
+def is_book_available(information_system: InformationSystem, book_id):
+    return information_system.get_available_copies(book_id) > 0
+
+
+def borrow_book(information_system: InformationSystem):
+    while True:
+        try:
+            student_id=input("Student id: ")
+            book_id=input("Book id: ")
+        except Exception as e:
+            print(e)
+            continue
+        break
+    if not is_book_available(information_system, book_id):
+        print("Book unavailable")
+        return
+
+    information_system.borrow_book({"student_id": student_id, "book_id": book_id})
+    print("Book borrowed")
+
+
+def print_loans_of_student(information_system: InformationSystem, loans):
+
+    for loan in loans:
+        borrow_id, book_id, borrow_date = loan
+        title=information_system.get_book_title_by_id(book_id)[0][0]
+        print(f"Borrow ID: {borrow_id}")
+        print(f"\t Title: {title}")
+        print(f"\t Borrowed on: {borrow_date}")
+
+def get_loans_set(loans):
+    loans_set=set()
+
+    for loan in loans:
+        loans_set.add(loan[0])
+
+    return loans_set
+
+def return_book(information_system: InformationSystem):
+    while True:
+        try:
+            student_id=int(input("Student id: "))
+        except Exception as e:
+            print(e)
+            continue
+        break
+
+    loans = information_system.get_loans_by_student(student_id)
+    if not loans:
+        print("Student has no borrowed books.")
+        return
+    print_loans_of_student(information_system, loans)
+    loans_set = get_loans_set(loans)
+
+    selected_borrows=[]
+    print("Choose book to return (press -1 to finish adding): ")
+    while True:
+        try:
+            borrow_id = int(input("Borrow ID: "))
+
+            if borrow_id == -1:
+                break
+            if borrow_id not in loans_set:
+                print("Please choose ids from above")
+                continue
+            
+            selected_borrows.append(borrow_id)
+        except:
+            print(e)
+            continue
+        break
+    
+    for borrow in selected_borrows:
+        information_system.return_book(borrow)
+
+
+
 if __name__== "__main__":
 
     while True:
@@ -129,6 +209,12 @@ if __name__== "__main__":
 
         elif menu_choice == 2:
             add_book(information_system)
+        
+        elif menu_choice == 3:
+            borrow_book(information_system)
+        
+        elif menu_choice == 4:
+            return_book(information_system)
         
         elif menu_choice == 5:
             get_students(information_system)
