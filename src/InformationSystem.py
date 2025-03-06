@@ -1,6 +1,8 @@
 from .utils.postgres_db import PostgresDB
 from .utils import consts 
 
+import datetime
+
 class InformationSystem:
     def __init__(self, db: PostgresDB):
         self.db = db
@@ -55,7 +57,7 @@ class InformationSystem:
         return loans
     
     def get_loans_by_student(self, student_id):
-        loans=self.db.get_data_multiple_conditions(consts.BORROW_TABLE, ["borrow_id", "book_id"], 
+        loans=self.db.get_data_multiple_conditions(consts.BORROW_TABLE, ["borrow_id", "book_id", "borrow_date"], 
                                                    {"student_id": student_id, "returned": "FALSE"})
         return loans
     
@@ -65,8 +67,12 @@ class InformationSystem:
         self.db.update_table(consts.BOOK_TABLE, {"copies_available": copies-1}, {"book_id": data_dict["book_id"]})
         return borrow
     
-    def return_book(self, updates_dict, conditions_dict):
-        self.db.update_table(consts.BORROW_TABLE, updates_dict, conditions_dict)
+    def return_book(self, borrow_id):
+        book_id=self.db.get_data_simple_condition(consts.BORROW_TABLE, ["book_id"], "borrow_id", borrow_id)[0][0]
+        self.db.update_table(consts.BORROW_TABLE, {"returned": "TRUE", "return_date": datetime.date.today()}, 
+                             {"borrow_id": borrow_id})
+        self.db.update_table(consts.BOOK_TABLE, {"copies_available": self.get_available_copies(book_id)+1}, 
+                             {"book_id": book_id})
     
 
     
