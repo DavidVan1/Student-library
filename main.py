@@ -69,14 +69,9 @@ def get_authors(information_system: InformationSystem):
         print(f"{id}, {name} {surname}")
 
 
-
 def get_author_id(information_system: InformationSystem, name, surname):
     id=information_system.get_author_by_name({"name": name, "surname": surname})
     return id[0][0] if id else add_author(information_system, name, surname)[0]
-
-
-def get_author_name(information_system: InformationSystem, author_id):
-    return information_system.get_author_by_id(author_id)
 
 
 def add_book(information_system: InformationSystem):
@@ -100,10 +95,10 @@ def get_books(information_system: InformationSystem):
     books=information_system.get_books()
     for book in books:
         id, title, author_id, copies_available = book
-        author_name, author_surname = get_author_name(information_system, author_id)
+        author_name, author_surname = information_system.get_author_by_id(author_id)
         print("\n*******************************************")
         print(title)
-        print(f"\t ID: {id}")
+        print(f"\t Book ID: {id}")
         print(f"\t Name: {author_name} {author_surname}")
         print(f"\t Available copies: {copies_available}")
 
@@ -190,7 +185,7 @@ def return_book(information_system: InformationSystem):
             continue
         if loans_set: continue
         break
-    
+
     for borrow in selected_borrows:
         information_system.return_book(borrow)
 
@@ -200,7 +195,7 @@ def print_unreturned_books(information_system: InformationSystem,borrow_records)
     for record in borrow_records.keys():
         name, surname, programme = information_system.get_student_by_id(record)[0]
         print("\n*******************************************")
-        print(f"Student: {name} {surname}")
+        print(f"Student: {name} {surname}, ID: {record}")
 
         for borrow in borrow_records[record]:
             title=information_system.get_book_title_by_id(borrow["book_id"])
