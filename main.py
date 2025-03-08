@@ -184,9 +184,11 @@ def return_book(information_system: InformationSystem):
                 continue
             
             selected_borrows.append(borrow_id)
+            loans_set.remove(borrow_id)
         except:
             print(e)
             continue
+        if loans_set: continue
         break
     
     for borrow in selected_borrows:
