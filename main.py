@@ -142,10 +142,10 @@ def print_loans_of_student(information_system: InformationSystem, loans):
     print("\n*******************************************")
     for loan in loans:
         borrow_id, book_id, borrow_date = loan
-        title=information_system.get_book_title_by_id(book_id)[0][0]
+        title=information_system.get_book_title_by_id(book_id)
         print(f"Borrow ID: {borrow_id}")
         print(f"\t Title: {title}")
-        print(f"\t Borrowed on: {borrow_date}")
+        print(f"\t Borrowed on: {borrow_date}\n")
 
 def get_loans_set(loans):
     loans_set=set()
