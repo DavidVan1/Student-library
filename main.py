@@ -1,7 +1,6 @@
 from src.utils.postgres_db import PostgresDB
 from src.InformationSystem import InformationSystem
 
-import datetime
 
 pg_db=PostgresDB(
     host="localhost",
@@ -24,7 +23,7 @@ def print_menu():
     print("\t[5] to list students")
     print("\t[6] to list books")
     print("\t[7] to list authors")
-    print("\t[8] to list loans")
+    print("\t[8] to list unreturned books")
     print("\t[9] to exit")
 
 
@@ -99,7 +98,6 @@ def add_book(information_system: InformationSystem):
 
 def get_books(information_system: InformationSystem):
     books=information_system.get_books()
-    
     for book in books:
         id, title, author_id, copies_available = book
         author_name, author_surname = get_author_name(information_system, author_id)
@@ -141,7 +139,7 @@ def borrow_book(information_system: InformationSystem):
 
 
 def print_loans_of_student(information_system: InformationSystem, loans):
-
+    print("\n*******************************************")
     for loan in loans:
         borrow_id, book_id, borrow_date = loan
         title=information_system.get_book_title_by_id(book_id)[0][0]
@@ -195,6 +193,42 @@ def return_book(information_system: InformationSystem):
         information_system.return_book(borrow)
 
 
+def print_unreturned_books(information_system: InformationSystem,borrow_records):
+
+    for record in borrow_records.keys():
+        name, surname, programme = information_system.get_student_by_id(record)[0]
+        print("\n*******************************************")
+        print(f"Student: {name} {surname}")
+
+        for borrow in borrow_records[record]:
+            title=information_system.get_book_title_by_id(borrow["book_id"])
+            borrow_date = borrow["borrow_date"]
+            id=borrow["borrow_id"]
+            print("\nBook:", end='')
+            print(f"\t Title: {title}")
+            print(f"\t Borrowed on: {borrow_date}")
+            print(f"\t Borrow ID: {id}")
+
+
+def get_unreturned_books(information_system: InformationSystem):
+    borrows=information_system.get_unreturned_books()
+    
+    borrow_records = {}
+
+    for borrow in borrows:
+        student_id, borrow_id, book_id, borrow_date = borrow
+        if student_id not in borrow_records:
+            borrow_records[student_id] = []
+    
+        borrow_records[student_id].append({
+            "borrow_id": borrow_id,
+            "book_id": book_id,
+            "borrow_date": borrow_date
+        })
+    
+    print_unreturned_books(information_system, borrow_records)
+
+
 
 if __name__== "__main__":
 
@@ -233,6 +267,9 @@ if __name__== "__main__":
 
         elif menu_choice == 7:
             get_authors(information_system)
+        
+        elif menu_choice == 8:
+            get_unreturned_books(information_system)
         
         elif menu_choice == 9:
             break
