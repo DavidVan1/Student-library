@@ -29,7 +29,7 @@ class InformationSystem:
     
     def get_book_title_by_id(self, book_id):
         book=self.db.get_data_simple_condition(consts.BOOK_TABLE, ["title"], "book_id", book_id)
-        return book
+        return book[0][0] if book else None
 
     def insert_book(self, data_dict):
         book=self.db.insert_data(consts.BOOK_TABLE, data_dict)
@@ -44,7 +44,7 @@ class InformationSystem:
         return author
     
     def get_author_by_name(self, conditions):
-        author=self.db.get_data_multiple_conditions(consts.AUTHOR_TABLE, conditions)
+        author=self.db.get_data_multiple_conditions(consts.AUTHOR_TABLE, [], conditions)
         return author
     
     def get_author_by_id(self, author_id):
@@ -64,6 +64,11 @@ class InformationSystem:
         loans=self.db.get_data_multiple_conditions(consts.BORROW_TABLE, ["borrow_id", "book_id", "borrow_date"], 
                                                    {"student_id": student_id, "returned": "FALSE"})
         return loans
+    
+    def get_unreturned_books(self):
+        books=self.db.get_data_multiple_conditions(consts.BORROW_TABLE, ["student_id", "borrow_id","book_id", "borrow_date"],
+                                                   {"returned": "FALSE"})
+        return books
     
     def borrow_book(self, data_dict):
         borrow=self.db.insert_data(consts.BORROW_TABLE, data_dict)
